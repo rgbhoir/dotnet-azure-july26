@@ -11,9 +11,9 @@ pool:
 
 steps:
 # 1. Prepare SonarQube Cloud Analysis Configuration
-- task: SonarQubeCloudPrepare@3
+- task: SonarCloudPrepare@3
   inputs:
-    SonarQubeCloud: 'SonarCloudConnection' # Matches your service connection name
+    SonarCloud: 'SonarCloudConnection' # Matches your service connection name
     organization: 'rgbhoir' # Your exact SonarQube Cloud organization key
     scannerMode: 'MSBuild'
     projectKey: 'dotnet-azure-july26-key'
@@ -36,12 +36,12 @@ steps:
     arguments: '--configuration Release'
 
 # 4. Execute the SonarQube Cloud Code Analysis
-- task: SonarQubeCloudAnalyze@3
+- task: SonarCloudAnalyze@3
   inputs:
     jdkversion: 'JAVA_HOME_17_X64'
 
 # 5. Publish results back to SonarQube Cloud dashboard
-- task: SonarQubeCloudPublish@3
+- task: SonarCloudPublish@3
   inputs:
     pollingTimeoutSec: '300'
 
