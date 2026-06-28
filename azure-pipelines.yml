@@ -10,7 +10,11 @@ pool:
   name: 'Default'
 
 steps:
-# 1. Prepare SonarQube Cloud Analysis Configuration
+# 1. Explicitly checkout code with full Git history for SonarQube metrics
+- checkout: self
+  fetchDepth: 0 # Fixed: Disables shallow cloning to enable code tracking metrics
+
+# 2. Prepare SonarQube Cloud Analysis Configuration
 - task: SonarCloudPrepare@3
   inputs:
     SonarCloud: 'SonarCloudConnection' # Matches your service connection name
@@ -19,7 +23,7 @@ steps:
     projectKey: 'dotnet-azure-july26-key'
     projectName: 'dotnet-azure-july26'
 
-# 2. Compile and Build the .NET App locally on the pipeline agent
+# 3. Compile and Build the .NET App locally on the pipeline agent
 - task: DotNetCoreCLI@2
   displayName: 'Restore & Build Solution'
   inputs:
@@ -27,7 +31,7 @@ steps:
     projects: 'dotnet-azure-july26-solution.slnx'
     arguments: '--configuration Release'
 
-# 3. Execute the xUnit Test project and collect analysis insights
+# 4. Execute the xUnit Test project and collect analysis insights
 - task: DotNetCoreCLI@2
   displayName: 'Run Tests'
   inputs:
@@ -35,17 +39,17 @@ steps:
     projects: 'tests/WebApp.Tests/WebApp.Tests.csproj'
     arguments: '--configuration Release'
 
-# 4. Execute the SonarQube Cloud Code Analysis
+# 5. Execute the SonarQube Cloud Code Analysis
 - task: SonarCloudAnalyze@3
   inputs:
     jdkversion: 'JAVA_HOME_17_X64'
 
-# 5. Publish results back to SonarQube Cloud dashboard
+# 6. Publish results back to SonarQube Cloud dashboard
 - task: SonarCloudPublish@3
   inputs:
     pollingTimeoutSec: '300'
 
-# 6. Package and publish Build Artifacts for your Release engine
+# 7. Package and publish Build Artifacts for your Release engine
 - task: PublishBuildArtifacts@1
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
