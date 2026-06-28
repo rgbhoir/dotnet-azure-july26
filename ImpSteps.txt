@@ -1,0 +1,34 @@
+C:\Projects\dotnet\azure>git clone https://github.com/rgbhoir/dotnet-azure-july26.git
+
+C:\Projects\dotnet\azure>cd dotnet-azure-july26
+
+C:\Projects\dotnet\azure\dotnet-azure-july26>dotnet new sln -n dotnet-azure-july26-solution
+
+md src
+md tests
+
+cd src
+
+C:\Projects\dotnet\azure\dotnet-azure-july26\src>dotnet new mvc -n webapp
+
+C:\Projects\dotnet\azure\dotnet-azure-july26\src>cd..
+
+C:\Projects\dotnet\azure\dotnet-azure-july26>dotnet sln add src\webapp\webapp.csproj
+
+C:\Projects\dotnet\azure\dotnet-azure-july26>dotnet new gitignore
+
+Modify gitignore file
+bin/
+obj/
+.vs/
+*.user
+*.dll
+*.exe
+
+
+C:\Projects\dotnet\azure\dotnet-azure-july26>dotnet build
+
+port https:6001, http:6003
+
+cd src/WebApp
+dotnet run --urls "https://localhost:6001"
