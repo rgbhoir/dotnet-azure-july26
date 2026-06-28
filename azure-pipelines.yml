@@ -15,7 +15,7 @@ steps:
   inputs:
     SonarCloud: 'SonarCloudConnection' # Matches your service connection name
     organization: 'rgbhoir' # Your exact SonarQube Cloud organization key
-    scannerMode: 'MSBuild'
+    scannerMode: 'dotnet'
     projectKey: 'dotnet-azure-july26-key'
     projectName: 'dotnet-azure-july26'
 
