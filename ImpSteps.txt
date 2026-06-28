@@ -26,6 +26,16 @@ obj/
 *.exe
 
 
+======
+
+C:\Projects\dotnet\azure\dotnet-azure-july26>
+cd tests
+C:\Projects\dotnet\azure\dotnet-azure-july26\tests>dotnet new xunit -n WebApp.Tests
+cd ..
+C:\Projects\dotnet\azure\dotnet-azure-july26>dotnet sln add tests/WebApp.Tests/WebApp.Tests.csproj
+
+======
+
 C:\Projects\dotnet\azure\dotnet-azure-july26>dotnet build
 
 port https:6001, http:6003
@@ -33,12 +43,6 @@ port https:6001, http:6003
 cd src/WebApp
 dotnet run --urls "https://localhost:6001"
 
-============
-C:\Projects\dotnet\azure\dotnet-azure-july26>
-cd tests
-C:\Projects\dotnet\azure\dotnet-azure-july26\tests>dotnet new xunit -n WebApp.Tests
-cd ..
-C:\Projects\dotnet\azure\dotnet-azure-july26>dotnet sln add tests/WebApp.Tests/WebApp.Tests.csproj
 
 
 =========== Git push
