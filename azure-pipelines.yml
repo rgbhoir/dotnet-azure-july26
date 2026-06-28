@@ -24,7 +24,7 @@ steps:
   displayName: 'Restore & Build Solution'
   inputs:
     command: 'build'
-    projects: 'dotnet-azure-july26-solution.sln'
+    projects: 'dotnet-azure-july26-solution.slnx'
     arguments: '--configuration Release'
 
 # 3. Execute the xUnit Test project and collect analysis insights
