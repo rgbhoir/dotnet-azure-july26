@@ -6,8 +6,8 @@
 trigger:
 - main
 
-pool:
-  vmImage: 'Default'
+pool:  
+  name: 'Default'
 
 steps:
 # 1. Prepare SonarQube Cloud Analysis Configuration
