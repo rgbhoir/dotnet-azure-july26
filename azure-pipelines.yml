@@ -1,0 +1,53 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- main
+
+pool:
+  vmImage: 'windows-latest'
+
+steps:
+# 1. Prepare SonarQube Cloud Analysis Configuration
+- task: SonarQubeCloudPrepare@3
+  inputs:
+    SonarQubeCloud: 'SonarCloudConnection' # Matches your service connection name
+    organization: 'rgbhoir' # Your exact SonarQube Cloud organization key
+    scannerMode: 'MSBuild'
+    projectKey: 'dotnet-azure-july26-key'
+    projectName: 'dotnet-azure-july26'
+
+# 2. Compile and Build the .NET App locally on the pipeline agent
+- task: DotNetCoreCLI@2
+  displayName: 'Restore & Build Solution'
+  inputs:
+    command: 'build'
+    projects: 'dotnet-azure-july26-solution.sln'
+    arguments: '--configuration Release'
+
+# 3. Execute the xUnit Test project and collect analysis insights
+- task: DotNetCoreCLI@2
+  displayName: 'Run Tests'
+  inputs:
+    command: 'test'
+    projects: 'tests/WebApp.Tests/WebApp.Tests.csproj'
+    arguments: '--configuration Release'
+
+# 4. Execute the SonarQube Cloud Code Analysis
+- task: SonarQubeCloudAnalyze@3
+  inputs:
+    jdkversion: 'JAVA_HOME_17_X64'
+
+# 5. Publish results back to SonarQube Cloud dashboard
+- task: SonarQubeCloudPublish@3
+  inputs:
+    pollingTimeoutSec: '300'
+
+# 6. Package and publish Build Artifacts for your Release engine
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
