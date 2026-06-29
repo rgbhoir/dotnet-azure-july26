@@ -46,6 +46,7 @@ steps:
 
 # 6. Publish results back to SonarQube Cloud dashboard
 - task: SonarCloudPublish@3
+  continueOnError: true # Added: Prevents API permission warnings from blocking your build
   inputs:
     pollingTimeoutSec: '300'
 
