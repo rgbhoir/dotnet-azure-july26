@@ -1,56 +1,52 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
-
 trigger:
 - main
 
-pool:  
-  name: 'Default'
+pool:
+  name: 'Default' # Executes code steps directly on your local ATHARVA machine
 
 steps:
-# 1. Explicitly checkout code with full Git history for SonarQube metrics
+# 1. Pull down the GitHub source code repository tree with full history logging
 - checkout: self
-  fetchDepth: 0 # Fixed: Disables shallow cloning to enable code tracking metrics
+  fetchDepth: 0
 
-# 2. Prepare SonarQube Cloud Analysis Configuration
+# 2. Initialize and prepare SonarQube Cloud Analysis
 - task: SonarCloudPrepare@3
   inputs:
-    SonarCloud: 'SonarCloudConnection' # Matches your service connection name
-    organization: 'rgbhoir' # Your exact SonarQube Cloud organization key
+    SonarCloud: 'SonarCloudConnection'
+    organization: 'rgbhoir'
     scannerMode: 'dotnet'
     projectKey: 'dotnet-azure-july26-key'
     projectName: 'dotnet-azure-july26'
 
-# 3. Compile and Build the .NET App locally on the pipeline agent
-- task: DotNetCoreCLI@2
-  displayName: 'Restore & Build Solution'
+# 3. Trigger Jenkins on your machine to build the .NET application binaries
+- task: JenkinsQueueJob@2
+  displayName: 'Hand-off Compile Task to Jenkins'
   inputs:
-    command: 'build'
-    projects: 'dotnet-azure-july26-solution.slnx'
-    arguments: '--configuration Release'
+    serverEndpoint: 'JenkinsConnection' # Matches your saved connection name
+    jobName: 'Build-DotNet-App' # Matches your Jenkins job profile name
+    captureConsole: true
+    capturePipeline: true
 
-# 4. Execute the xUnit Test project and collect analysis insights
+# 4. Run the xUnit validation framework tests locally
 - task: DotNetCoreCLI@2
-  displayName: 'Run Tests'
+  displayName: 'Run xUnit Quality Tests'
   inputs:
     command: 'test'
     projects: 'tests/WebApp.Tests/WebApp.Tests.csproj'
     arguments: '--configuration Release'
 
-# 5. Execute the SonarQube Cloud Code Analysis
+# 5. Process and compile metrics tracking for SonarQube Cloud
 - task: SonarCloudAnalyze@3
   inputs:
     jdkversion: 'JAVA_HOME_17_X64'
 
-# 6. Publish results back to SonarQube Cloud dashboard
+# 6. Publish the analytics dashboard metrics to your profile page
 - task: SonarCloudPublish@3
-  continueOnError: true # Added: Prevents API permission warnings from blocking your build
+  continueOnError: true
   inputs:
     pollingTimeoutSec: '300'
 
-# 7. Package and publish Build Artifacts for your Release engine
+# 7. Package and drop final compiled app builds inside Azure DevOps
 - task: PublishBuildArtifacts@1
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
